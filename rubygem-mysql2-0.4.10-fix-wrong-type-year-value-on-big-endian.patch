@@ -1,0 +1,37 @@
+diff --git a/ext/mysql2/result.c b/ext/mysql2/result.c
+index ccb49a5..67f75be 100644
+--- a/ext/mysql2/result.c
++++ b/ext/mysql2/result.c
+@@ -278,12 +278,12 @@ static void rb_mysql_result_alloc_result_buffers(VALUE self, MYSQL_FIELD *fields
+         wrapper->result_buffers[i].buffer_length = sizeof(signed char);
+         break;
+       case MYSQL_TYPE_SHORT:        // short int
++      case MYSQL_TYPE_YEAR:         // short int
+         wrapper->result_buffers[i].buffer = xcalloc(1, sizeof(short int));
+         wrapper->result_buffers[i].buffer_length = sizeof(short int);
+         break;
+       case MYSQL_TYPE_INT24:        // int
+       case MYSQL_TYPE_LONG:         // int
+-      case MYSQL_TYPE_YEAR:         // int
+         wrapper->result_buffers[i].buffer = xcalloc(1, sizeof(int));
+         wrapper->result_buffers[i].buffer_length = sizeof(int);
+         break;
+@@ -413,6 +413,7 @@ static VALUE rb_mysql_result_fetch_row_stmt(VALUE self, MYSQL_FIELD * fields, co
+           }
+           break;
+         case MYSQL_TYPE_SHORT:        // short int
++        case MYSQL_TYPE_YEAR:         // short int
+           if (result_buffer->is_unsigned) {
+             val = UINT2NUM(*((unsigned short int*)result_buffer->buffer));
+           } else  {
+@@ -421,7 +422,6 @@ static VALUE rb_mysql_result_fetch_row_stmt(VALUE self, MYSQL_FIELD * fields, co
+           break;
+         case MYSQL_TYPE_INT24:        // int
+         case MYSQL_TYPE_LONG:         // int
+-        case MYSQL_TYPE_YEAR:         // int
+           if (result_buffer->is_unsigned) {
+             val = UINT2NUM(*((unsigned int*)result_buffer->buffer));
+           } else {
+-- 
+2.14.3
+

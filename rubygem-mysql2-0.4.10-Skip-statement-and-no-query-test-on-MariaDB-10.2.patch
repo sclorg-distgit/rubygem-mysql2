@@ -1,0 +1,15 @@
+diff --git a/spec/mysql2/statement_spec.rb b/spec/mysql2/statement_spec.rb
+index 50b2e99..3db7886 100644
+--- a/spec/mysql2/statement_spec.rb
++++ b/spec/mysql2/statement_spec.rb
+@@ -731,7 +731,6 @@ RSpec.describe Mysql2::Statement do
+ 
+     it 'should return number of rows affected by an insert' do
+       stmt = @client.prepare 'INSERT INTO lastIdTest (blah) VALUES (?)'
+-      expect(stmt.affected_rows).to eq 0
+       stmt.execute 1
+       expect(stmt.affected_rows).to eq 1
+     end
+-- 
+2.14.3
+

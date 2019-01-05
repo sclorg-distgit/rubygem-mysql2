@@ -1,0 +1,162 @@
+From 235eaa482ce2cfa0dfbe1e4e7123d1a1f6bbf136 Mon Sep 17 00:00:00 2001
+From: Jun Aruga <junaruga@users.noreply.github.com>
+Date: Sat, 25 Nov 2017 20:10:10 +0100
+Subject: [PATCH 1/2] Suppress Fixnum and Bignum warnings on Ruby 2.4. (#907)
+
+---
+ spec/mysql2/client_spec.rb    |  8 ++++----
+ spec/mysql2/result_spec.rb    | 12 ++++++------
+ spec/mysql2/statement_spec.rb | 12 ++++++------
+ spec/spec_helper.rb           |  4 ++++
+ 4 files changed, 20 insertions(+), 16 deletions(-)
+
+diff --git a/spec/mysql2/client_spec.rb b/spec/mysql2/client_spec.rb
+index dfb92a2..9de040b 100644
+--- a/spec/mysql2/client_spec.rb
++++ b/spec/mysql2/client_spec.rb
+@@ -572,7 +572,7 @@ RSpec.describe Mysql2::Client do
+       end
+ 
+       it "#socket should return a Fixnum (file descriptor from C)" do
+-        expect(@client.socket).to be_an_instance_of(Fixnum)
++        expect(@client.socket).to be_an_instance_of(0.class)
+         expect(@client.socket).not_to eql(0)
+       end
+ 
+@@ -852,7 +852,7 @@ RSpec.describe Mysql2::Client do
+     info = @client.info
+     expect(info).to be_an_instance_of(Hash)
+     expect(info).to have_key(:id)
+-    expect(info[:id]).to be_an_instance_of(Fixnum)
++    expect(info[:id]).to be_an_instance_of(0.class)
+     expect(info).to have_key(:version)
+     expect(info[:version]).to be_an_instance_of(String)
+   end
+@@ -883,7 +883,7 @@ RSpec.describe Mysql2::Client do
+     server_info = @client.server_info
+     expect(server_info).to be_an_instance_of(Hash)
+     expect(server_info).to have_key(:id)
+-    expect(server_info[:id]).to be_an_instance_of(Fixnum)
++    expect(server_info[:id]).to be_an_instance_of(0.class)
+     expect(server_info).to have_key(:version)
+     expect(server_info[:version]).to be_an_instance_of(String)
+   end
+@@ -974,7 +974,7 @@ RSpec.describe Mysql2::Client do
+   end
+ 
+   it "#thread_id should be a Fixnum" do
+-    expect(@client.thread_id).to be_an_instance_of(Fixnum)
++    expect(@client.thread_id).to be_an_instance_of(0.class)
+   end
+ 
+   it "should respond to #ping" do
+diff --git a/spec/mysql2/result_spec.rb b/spec/mysql2/result_spec.rb
+index c8e26c5..e8ee8d0 100644
+--- a/spec/mysql2/result_spec.rb
++++ b/spec/mysql2/result_spec.rb
+@@ -204,7 +204,7 @@ RSpec.describe Mysql2::Result do
+     end
+ 
+     it "should return Fixnum for a TINYINT value" do
+-      expect([Fixnum, Bignum]).to include(@test_result['tiny_int_test'].class)
++      expect(num_classes).to include(@test_result['tiny_int_test'].class)
+       expect(@test_result['tiny_int_test']).to eql(1)
+     end
+ 
+@@ -248,27 +248,27 @@ RSpec.describe Mysql2::Result do
+     end
+ 
+     it "should return Fixnum for a SMALLINT value" do
+-      expect([Fixnum, Bignum]).to include(@test_result['small_int_test'].class)
++      expect(num_classes).to include(@test_result['small_int_test'].class)
+       expect(@test_result['small_int_test']).to eql(10)
+     end
+ 
+     it "should return Fixnum for a MEDIUMINT value" do
+-      expect([Fixnum, Bignum]).to include(@test_result['medium_int_test'].class)
++      expect(num_classes).to include(@test_result['medium_int_test'].class)
+       expect(@test_result['medium_int_test']).to eql(10)
+     end
+ 
+     it "should return Fixnum for an INT value" do
+-      expect([Fixnum, Bignum]).to include(@test_result['int_test'].class)
++      expect(num_classes).to include(@test_result['int_test'].class)
+       expect(@test_result['int_test']).to eql(10)
+     end
+ 
+     it "should return Fixnum for a BIGINT value" do
+-      expect([Fixnum, Bignum]).to include(@test_result['big_int_test'].class)
++      expect(num_classes).to include(@test_result['big_int_test'].class)
+       expect(@test_result['big_int_test']).to eql(10)
+     end
+ 
+     it "should return Fixnum for a YEAR value" do
+-      expect([Fixnum, Bignum]).to include(@test_result['year_test'].class)
++      expect(num_classes).to include(@test_result['year_test'].class)
+       expect(@test_result['year_test']).to eql(2009)
+     end
+ 
+diff --git a/spec/mysql2/statement_spec.rb b/spec/mysql2/statement_spec.rb
+index e0fccad..50b2e99 100644
+--- a/spec/mysql2/statement_spec.rb
++++ b/spec/mysql2/statement_spec.rb
+@@ -372,7 +372,7 @@ RSpec.describe Mysql2::Statement do
+     end
+ 
+     it "should return Fixnum for a TINYINT value" do
+-      expect([Fixnum, Bignum]).to include(@test_result['tiny_int_test'].class)
++      expect(num_classes).to include(@test_result['tiny_int_test'].class)
+       expect(@test_result['tiny_int_test']).to eql(1)
+     end
+ 
+@@ -420,27 +420,27 @@ RSpec.describe Mysql2::Statement do
+     end
+ 
+     it "should return Fixnum for a SMALLINT value" do
+-      expect([Fixnum, Bignum]).to include(@test_result['small_int_test'].class)
++      expect(num_classes).to include(@test_result['small_int_test'].class)
+       expect(@test_result['small_int_test']).to eql(10)
+     end
+ 
+     it "should return Fixnum for a MEDIUMINT value" do
+-      expect([Fixnum, Bignum]).to include(@test_result['medium_int_test'].class)
++      expect(num_classes).to include(@test_result['medium_int_test'].class)
+       expect(@test_result['medium_int_test']).to eql(10)
+     end
+ 
+     it "should return Fixnum for an INT value" do
+-      expect([Fixnum, Bignum]).to include(@test_result['int_test'].class)
++      expect(num_classes).to include(@test_result['int_test'].class)
+       expect(@test_result['int_test']).to eql(10)
+     end
+ 
+     it "should return Fixnum for a BIGINT value" do
+-      expect([Fixnum, Bignum]).to include(@test_result['big_int_test'].class)
++      expect(num_classes).to include(@test_result['big_int_test'].class)
+       expect(@test_result['big_int_test']).to eql(10)
+     end
+ 
+     it "should return Fixnum for a YEAR value" do
+-      expect([Fixnum, Bignum]).to include(@test_result['year_test'].class)
++      expect(num_classes).to include(@test_result['year_test'].class)
+       expect(@test_result['year_test']).to eql(2009)
+     end
+ 
+diff --git a/spec/spec_helper.rb b/spec/spec_helper.rb
+index 53c098a..045e783 100644
+--- a/spec/spec_helper.rb
++++ b/spec/spec_helper.rb
+@@ -36,6 +36,10 @@ RSpec.configure do |config|
+     end
+   end
+ 
++  def num_classes
++    0.class == Integer ? [Integer] : [Fixnum, Bignum]
++  end
++
+   config.before :each do
+     @client = new_client
+   end
+-- 
+2.14.3
+
